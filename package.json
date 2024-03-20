@@ -1,0 +1,26 @@
+{
+	"name": "gatherpress-venue-website",
+	"version": "0.1.0",
+	"description": "An experiment to replace the 'website' part of the `gatherpress/venue` block with a block-variation of the `core/paragraph` block.",
+	"author": "The WordPress Contributors",
+	"license": "GPL-2.0-or-later",
+	"main": "variations.js",
+	"scripts": {
+		"build": "wp-scripts build",
+		"format": "wp-scripts format",
+		"lint:css": "wp-scripts lint-style",
+		"lint:js": "wp-scripts lint-js",
+		"packages-update": "wp-scripts packages-update",
+		"plugin-zip": "wp-scripts plugin-zip",
+		"start": "wp-scripts start"
+	},
+	"files": [
+		"build",
+		"gatherpress-venue-website.php",
+		"readme.txt"
+	],
+	"devDependencies": {
+		"@wordpress/scripts": "^27.4.0",
+		"classnames": "^2.5.1"
+	}
+}
