@@ -24,14 +24,14 @@ registerBlockVariation( 'core/paragraph', {
 	description: __( 'Displays the website for a venue.', 'gatherpress' ),
 	category: 'gatherpress',
 	icon: 'nametag',
-	// isActive: [ 'namespace', 'className' ],
+	isActive: [ 'className', 'metadata.bindings.content.args.key' ],
 	// @source https://github.com/WordPress/gutenberg/issues/41303#issuecomment-1760985709 
 	// I had to add blockAttrs to the fn to make this work, because the className only exists within the variationAttrs, which comes second.
-	isActive: ( blockAttrs, { className }) => {
-		return (
-			className.includes(GPVW_CLASS_NAME) // check if className contains GPV_CLASS_NAME and not equals. incase you add additional css classes it will still work
-		);
-	},
+	// isActive: ( blockAttrs, { className }) => {
+	// 	return (
+	// 		blockAttrs.className.includes(GPVW_CLASS_NAME) // check if className contains GPV_CLASS_NAME and not equals. incase you add additional css classes it will still work
+	// 	);
+	// },
 	attributes: {
 		// namespace: GPVW_CLASS_NAME,
 		className: GPVW_CLASS_NAME,
@@ -44,13 +44,17 @@ registerBlockVariation( 'core/paragraph', {
 					}
 				}
 			}
-		}
+		},
+		placeholder: "No website added, yet.",
 	},
 	// allowedControls: [],
-	scope: [ 'inserter', 'transform', 'block' ], // Defaults to 'block' and 'inserter'.
+	// scope: [ 'inserter', 'transform', 'block' ], // Defaults to 'block' and 'inserter'.
 	example: {}
 } );
 
+
+
+/* 
 registerBlockVariation( 'core/button', {
 	name: GPVW_CLASS_NAME,
 	title: __( 'Venue Website', 'gatherpress' ),
@@ -95,7 +99,7 @@ registerBlockVariation( 'core/button', {
 	scope: [ 'inserter', 'transform', 'block' ], // Defaults to 'block' and 'inserter'.
 	example: {}
 } );
-
+ */
 
 
 
@@ -109,54 +113,84 @@ registerBlockVariation( 'core/button', {
  *
  * @see https://developer.wordpress.org/block-editor/developers/filters/block-filters/#editor-blockedit
  */
+// addFilter(
+// 	"editor.BlockEdit",
+// 	"gatherpress-venue-website/paragraph-block-variation",
+// 	createHigherOrderComponent((BlockEdit) => {
+// 		return (props) => {
+// 			if (props.name !== "core/paragraph" || props.attributes.className !== GPVW_CLASS_NAME) {
+// 				return <BlockEdit {...props} />;
+// 			}
+
+// 		/* 	
+// 			const linkedContent = '<a href="#">' + props.attributes.content + '</a>';
+// 			let newAttrs;
+// 			newAttrs = {
+// 				...props.attributes,
+// 				// content: undefined
+// 				// content: <Edit {...props} />
+// 				// content: linkedContent
+// 				dynamicContent: linkedContent
+// 			}
+// 			// delete newAttrs.content;
+
+// 			let newProps;
+// 			newProps = {
+// 				...props,
+// 				attributes: newAttrs
+// 			}
+// console.log(newProps, 'newProps');
+
+// */
+// // console.log(props, 'props');
+
+// /* 
+// if (-1 === props.attributes.content.indexOf('a href')) {
+// 	props.setAttributes( {
+// 		content: '<a href="#">' + props.attributes.content + '</a>',
+// 	} );	
+// }
+//  */
+
+// // console.log(props, 'setAttributes --> props');
+
+
+// 			return (
+// 				<>
+// 					<BlockEdit {...props} />
+// 					{/* <Edit {...props} /> */}
+// 				</>
+// 			);
+// 		};
+// 	}),
+// );
+
+
+
 addFilter(
-	"editor.BlockEdit",
-	"gatherpress-venue-website/paragraph-block-variation",
-	createHigherOrderComponent((BlockEdit) => {
-		return (props) => {
-			if (props.name !== "core/paragraph" || props.attributes.className !== GPVW_CLASS_NAME) {
-				return <BlockEdit {...props} />;
-			}
-
-		/* 	
-			const linkedContent = '<a href="#">' + props.attributes.content + '</a>';
-			let newAttrs;
-			newAttrs = {
-				...props.attributes,
-				// content: undefined
-				// content: <Edit {...props} />
-				// content: linkedContent
-				dynamicContent: linkedContent
-			}
-			// delete newAttrs.content;
-
-			let newProps;
-			newProps = {
-				...props,
-				attributes: newAttrs
-			}
-console.log(newProps, 'newProps');
-
-*/
-console.log(props, 'props');
-
-/* 
-if (-1 === props.attributes.content.indexOf('a href')) {
-	props.setAttributes( {
-		content: '<a href="#">' + props.attributes.content + '</a>',
-	} );	
-}
- */
-
-// console.log(props, 'setAttributes --> props');
-
-
-			return (
-				<>
-					<BlockEdit {...props} />
-					{/* <Edit {...props} /> */}
-				</>
-			);
-		};
-	}),
+    'blocks.registerBlockType',
+    'gatherpress/extend-query-block',
+    extendQueryBlock
 );
+
+function extendQueryBlock(settings, name) {
+    if (name !== 'core/paragraph') {
+        return settings;
+    }
+	// console.log(name);
+	// console.info(settings);
+	
+	settings.usesContext.indexOf('postId') === -1 && settings.usesContext.push('postId');
+	// settings.usesContext.indexOf('postType') === -1 && settings.usesContext.push('postType');
+	
+	const newSettings = {
+        ...settings,
+        supports: {
+            ...settings.supports,
+			className: false, // Removes "Additional CSS classes" panel for blocks that support it
+			// customClassName: false // **Updated** For blocks that don't have className
+        },
+    }
+	// console.log(newSettings);
+	return newSettings;
+}

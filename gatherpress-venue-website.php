@@ -40,13 +40,14 @@ function bootstrap(): void {
 	 */
 	\add_filter(
 		'get_post_metadata',
-		function ( $metadata, $object_id, $meta_key ) : mixed {
+		function ( $metadata, $object_id, $meta_key ): mixed {
 			if ( 'venue_information__website' !== $meta_key ) {
 				return $metadata;
 			}
 			$venue_information = (array) json_decode( get_post_meta( $object_id, 'venue_information', true ) );
+			// die(\var_dump($venue_information, $object_id));
 			return [
-				$venue_information['website'],
+				( isset( $venue_information['website'] ) ) ? $venue_information['website'] : '',
 			];
 		},
 		10,
@@ -55,6 +56,10 @@ function bootstrap(): void {
 
 	// https://developer.wordpress.org/reference/hooks/render_block_this-name/
 	add_filter( 'render_block_core/paragraph', __NAMESPACE__ . '\\render_venue_website_block', 10, 3 );
+
+	add_filter( 'hooked_block_types', __NAMESPACE__ . '\\hook_block_into_pattern', 10, 4 );
+
+	add_filter( 'hooked_block_core/paragraph', __NAMESPACE__ . '\\modify_hooked_block_in_pattern', 10, 5 );
 }
 bootstrap();
 
@@ -195,38 +200,95 @@ function render_venue_website_block( $block_content, $block, $instance ) {
 	if ( ! isset( $block['attrs']['className'] ) || false === \strpos( $block['attrs']['className'], 'gp-venue-website' ) ) {
 		return $block_content;
 	}
-// wp_die('<pre>'.\var_export($block,true).'</pre>');
-// wp_die('<pre>'.\var_export($instance->attributes,true).'</pre>');
+	// wp_die('<pre>'.\var_export($block,true).'</pre>');
+	// wp_die('<pre>'.\var_export($instance,true).'</pre>');
+	// wp_die('<pre>'.\var_export($instance->context,true).'</pre>');
 
 	// Mostly copied from
 	// /gutenberg/packages/block-library/src/post-title/index.php#L38
-	if ( 1==1 || isset( $block['attrs']['isLink'] ) && $block['attrs']['isLink'] ) {
-		$title = \the_title_attribute([
-			'echo'   => false,
-			'before' => __('Website of ', 'gatherpress'),
-			'post'   => get_post( $instance->context['postId'] )
-		]);
-		$target = ! empty( $block['attrs']['linkTarget'] ) ? 'target="' . esc_attr( $block['attrs']['linkTarget'] ) . '"' : '';
-		$rel    = ! empty( $block['attrs']['linkRel'] ) ? 'rel="' . esc_attr( $block['attrs']['linkRel'] ) . '"' : '';
+	if ( 1 === 1 || isset( $block['attrs']['isLink'] ) && $block['attrs']['isLink'] ) {
+		$title          = \the_title_attribute(
+			[
+				'echo'   => false,
+				'before' => __( 'Website of ', 'gatherpress' ),
+				'post'   => get_post( $instance->context['postId'] ),
+			]
+		);
+		$meta           = \get_post_meta( 
+			$instance->context['postId'],
+			'venue_information__website',
+			true
+		);
+		$target         = ! empty( $block['attrs']['linkTarget'] ) ? 'target="' . esc_attr( $block['attrs']['linkTarget'] ) . '"' : '';
+		$rel            = ! empty( $block['attrs']['linkRel'] ) ? 'rel="' . esc_attr( $block['attrs']['linkRel'] ) . '"' : '';
 		$linked_content = sprintf( 
 			'<a href="%1$s" %2$s %3$s title="%4$s">%5$s</a>',
-			esc_url( 
-				\get_post_meta( 
-					$instance->context['postId'],
-					'venue_information__website',
-					true
-				)
-			),
+			esc_url( $meta ),
 			$target,
 			$rel,
 			$title,
-			url_shorten( $instance->attributes['content'] )
+			url_shorten( $meta )
 		);
 	}
 
 	return \str_replace(
-		'>' . $instance->attributes['content'] . '</',
+		'>' . $meta . '</',
 		'>' . $linked_content . '</',
 		$block_content
 	);
+}
+
+
+function hook_block_into_pattern( $hooked_block_types, $relative_position, $anchor_block_type, $context ) {
+	if (
+		// Conditionally hook the block into the "gatherpress/venue-details" pattern.
+		is_array( $context ) &&
+		isset( $context[ 'name' ] ) &&
+		'gatherpress/venue-details' === $context[ 'name' ]
+	) {
+
+		// Conditionally hook the block after "the" paragraph block,
+		// this <p> is the important one, like described in gatherpress/includes/core/classes/class-block.php
+		if ( 'after' === $relative_position && 'core/paragraph' === $anchor_block_type ) {
+			$hooked_block_types[] = 'core/paragraph';
+		}
+	}
+	return $hooked_block_types;
+}
+
+
+function modify_hooked_block_in_pattern( $parsed_hooked_block, $hooked_block_type, $relative_position, $parsed_anchor_block, $context  ) {
+
+	// Has the hooked block been suppressed by a previous filter?
+	if ( is_null( $parsed_hooked_block ) ) {
+		return $parsed_hooked_block;
+	}
+
+	// Conditionally hook the block into the "gatherpress/venue-details" pattern.
+	if (
+		! is_array( $context ) ||
+		! isset( $context[ 'name' ] ) ||
+		'gatherpress/venue-details' !== $context[ 'name' ]
+	) {
+		return $parsed_hooked_block;
+	}
+
+	// Only apply the updated attributes if the block is hooked after a Site Title block.
+	if ( 
+		'core/paragraph' === $parsed_anchor_block['blockName'] &&
+		'after' === $relative_position
+	) {
+		$parsed_hooked_block['innerContent']                                            = [ '<p class="gp-venue-website"></p>' ]; // important to get a paragraph injected at all.
+		$parsed_hooked_block['attrs']['className']                                      = 'gp-venue-website';
+		$parsed_hooked_block['attrs']['placeholder']                                    = __( 'No website added, yet.', 'gatherpress' ); // className is not supported for paragraphs, and so we can't set it.
+		$parsed_hooked_block['attrs']['metadata']                                       = [];
+		$parsed_hooked_block['attrs']['metadata']['bindings']                           = [];
+		$parsed_hooked_block['attrs']['metadata']['bindings']['content']                = [];
+		$parsed_hooked_block['attrs']['metadata']['bindings']['content']['source']      = 'core/post-meta';
+		$parsed_hooked_block['attrs']['metadata']['bindings']['content']['args']        = [];
+		$parsed_hooked_block['attrs']['metadata']['bindings']['content']['args']['key'] = [ 'venue_information__website' ];
+		// wp_die($parsed_hooked_block);
+	}
+
+	return $parsed_hooked_block;
 }

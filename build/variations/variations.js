@@ -2,16 +2,6 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "react":
-/*!************************!*\
-  !*** external "React" ***!
-  \************************/
-/***/ ((module) => {
-
-module.exports = window["React"];
-
-/***/ }),
-
 /***/ "@wordpress/blocks":
 /*!********************************!*\
   !*** external ["wp","blocks"] ***!
@@ -127,17 +117,14 @@ var __webpack_exports__ = {};
   !*** ./src/variations.js ***!
   \***************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
-/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_hooks__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/hooks */ "@wordpress/hooks");
-/* harmony import */ var _wordpress_hooks__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_hooks__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
-/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_4__);
-
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_hooks__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/hooks */ "@wordpress/hooks");
+/* harmony import */ var _wordpress_hooks__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_hooks__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_3__);
 /**
  * WordPress dependencies
  */
@@ -157,21 +144,20 @@ const GPVW_CLASS_NAME = 'gp-venue-website';
  * 
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-variations/
  */
-(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.registerBlockVariation)('core/paragraph', {
+(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockVariation)('core/paragraph', {
   name: GPVW_CLASS_NAME,
-  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Venue Website', 'gatherpress'),
-  description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Displays the website for a venue.', 'gatherpress'),
+  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Venue Website', 'gatherpress'),
+  description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Displays the website for a venue.', 'gatherpress'),
   category: 'gatherpress',
   icon: 'nametag',
-  // isActive: [ 'namespace', 'className' ],
+  isActive: ['className', 'metadata.bindings.content.args.key'],
   // @source https://github.com/WordPress/gutenberg/issues/41303#issuecomment-1760985709 
   // I had to add blockAttrs to the fn to make this work, because the className only exists within the variationAttrs, which comes second.
-  isActive: (blockAttrs, {
-    className
-  }) => {
-    return className.includes(GPVW_CLASS_NAME) // check if className contains GPV_CLASS_NAME and not equals. incase you add additional css classes it will still work
-    ;
-  },
+  // isActive: ( blockAttrs, { className }) => {
+  // 	return (
+  // 		blockAttrs.className.includes(GPVW_CLASS_NAME) // check if className contains GPV_CLASS_NAME and not equals. incase you add additional css classes it will still work
+  // 	);
+  // },
   attributes: {
     // namespace: GPVW_CLASS_NAME,
     className: GPVW_CLASS_NAME,
@@ -184,60 +170,60 @@ const GPVW_CLASS_NAME = 'gp-venue-website';
           }
         }
       }
-    }
+    },
+    placeholder: "No website added, yet."
   },
   // allowedControls: [],
-  scope: ['inserter', 'transform', 'block'],
-  // Defaults to 'block' and 'inserter'.
+  // scope: [ 'inserter', 'transform', 'block' ], // Defaults to 'block' and 'inserter'.
   example: {}
 });
-(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.registerBlockVariation)('core/button', {
-  name: GPVW_CLASS_NAME,
-  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Venue Website', 'gatherpress'),
-  description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Displays the website for a venue.', 'gatherpress'),
-  category: 'gatherpress',
-  icon: 'nametag',
-  // isActive: [ 'namespace', 'className' ],
-  // @source https://github.com/WordPress/gutenberg/issues/41303#issuecomment-1760985709 
-  // I had to add blockAttrs to the fn to make this work, because the className only exists within the variationAttrs, which comes second.
-  isActive: (blockAttrs, {
-    className
-  }) => {
-    return className.includes(GPVW_CLASS_NAME) // check if className contains GPV_CLASS_NAME and not equals. incase you add additional css classes it will still work
-    ;
-  },
-  attributes: {
-    // namespace: GPVW_CLASS_NAME,
-    className: GPVW_CLASS_NAME,
-    tagName: 'a',
-    // By setting this to 'button', instead of 'a', we can completely prevent the LinkControl getting rendered into the Toolbar.
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Venue Website', 'gatherpress'),
-    text: '🌐 ' + (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Venue Website', 'gatherpress') + ' (v2)',
-    // text: null,
-    // url: '#',
-    // url: null,
-    metadata: {
-      bindings: {
-        // text: {
-        // 	source: "core/post-meta",
-        // 	args: {
-        // 		key: "venue_information__website"
-        // 	}
-        // },
-        url: {
-          source: "core/post-meta",
-          args: {
-            key: "venue_information__website"
-          }
-        }
-      }
-    }
-  },
-  // allowedControls: [],
-  scope: ['inserter', 'transform', 'block'],
-  // Defaults to 'block' and 'inserter'.
-  example: {}
-});
+
+/* 
+registerBlockVariation( 'core/button', {
+	name: GPVW_CLASS_NAME,
+	title: __( 'Venue Website', 'gatherpress' ),
+	description: __( 'Displays the website for a venue.', 'gatherpress' ),
+	category: 'gatherpress',
+	icon: 'nametag',
+	// isActive: [ 'namespace', 'className' ],
+	// @source https://github.com/WordPress/gutenberg/issues/41303#issuecomment-1760985709 
+	// I had to add blockAttrs to the fn to make this work, because the className only exists within the variationAttrs, which comes second.
+	isActive: ( blockAttrs, { className }) => {
+		return (
+			className.includes(GPVW_CLASS_NAME) // check if className contains GPV_CLASS_NAME and not equals. incase you add additional css classes it will still work
+		);
+	},
+	attributes: {
+		// namespace: GPVW_CLASS_NAME,
+		className: GPVW_CLASS_NAME,
+		tagName: 'a', // By setting this to 'button', instead of 'a', we can completely prevent the LinkControl getting rendered into the Toolbar.
+		title: __( 'Venue Website', 'gatherpress' ),
+		text: '🌐 ' + __( 'Venue Website', 'gatherpress' ) + ' (v2)',
+		// text: null,
+		// url: '#',
+		// url: null,
+		metadata: {
+			bindings: {
+				// text: {
+				// 	source: "core/post-meta",
+				// 	args: {
+				// 		key: "venue_information__website"
+				// 	}
+				// },
+				url: {
+					source: "core/post-meta",
+					args: {
+						key: "venue_information__website"
+					}
+				}
+			}
+		}
+	},
+	// allowedControls: [],
+	scope: [ 'inserter', 'transform', 'block' ], // Defaults to 'block' and 'inserter'.
+	example: {}
+} );
+ */
 
 /**
  * Add the edit component to the block.
@@ -249,49 +235,79 @@ const GPVW_CLASS_NAME = 'gp-venue-website';
  *
  * @see https://developer.wordpress.org/block-editor/developers/filters/block-filters/#editor-blockedit
  */
-(0,_wordpress_hooks__WEBPACK_IMPORTED_MODULE_3__.addFilter)("editor.BlockEdit", "gatherpress-venue-website/paragraph-block-variation", (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_4__.createHigherOrderComponent)(BlockEdit => {
-  return props => {
-    if (props.name !== "core/paragraph" || props.attributes.className !== GPVW_CLASS_NAME) {
-      return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(BlockEdit, {
-        ...props
-      });
+// addFilter(
+// 	"editor.BlockEdit",
+// 	"gatherpress-venue-website/paragraph-block-variation",
+// 	createHigherOrderComponent((BlockEdit) => {
+// 		return (props) => {
+// 			if (props.name !== "core/paragraph" || props.attributes.className !== GPVW_CLASS_NAME) {
+// 				return <BlockEdit {...props} />;
+// 			}
+
+// 		/* 	
+// 			const linkedContent = '<a href="#">' + props.attributes.content + '</a>';
+// 			let newAttrs;
+// 			newAttrs = {
+// 				...props.attributes,
+// 				// content: undefined
+// 				// content: <Edit {...props} />
+// 				// content: linkedContent
+// 				dynamicContent: linkedContent
+// 			}
+// 			// delete newAttrs.content;
+
+// 			let newProps;
+// 			newProps = {
+// 				...props,
+// 				attributes: newAttrs
+// 			}
+// console.log(newProps, 'newProps');
+
+// */
+// // console.log(props, 'props');
+
+// /* 
+// if (-1 === props.attributes.content.indexOf('a href')) {
+// 	props.setAttributes( {
+// 		content: '<a href="#">' + props.attributes.content + '</a>',
+// 	} );	
+// }
+//  */
+
+// // console.log(props, 'setAttributes --> props');
+
+// 			return (
+// 				<>
+// 					<BlockEdit {...props} />
+// 					{/* <Edit {...props} /> */}
+// 				</>
+// 			);
+// 		};
+// 	}),
+// );
+
+(0,_wordpress_hooks__WEBPACK_IMPORTED_MODULE_2__.addFilter)('blocks.registerBlockType', 'gatherpress/extend-query-block', extendQueryBlock);
+function extendQueryBlock(settings, name) {
+  if (name !== 'core/paragraph') {
+    return settings;
+  }
+  // console.log(name);
+  // console.info(settings);
+
+  settings.usesContext.indexOf('postId') === -1 && settings.usesContext.push('postId');
+  // settings.usesContext.indexOf('postType') === -1 && settings.usesContext.push('postType');
+
+  const newSettings = {
+    ...settings,
+    supports: {
+      ...settings.supports,
+      className: false // Removes "Additional CSS classes" panel for blocks that support it
+      // customClassName: false // **Updated** For blocks that don't have className
     }
-
-    /* 	
-    	const linkedContent = '<a href="#">' + props.attributes.content + '</a>';
-    	let newAttrs;
-    	newAttrs = {
-    		...props.attributes,
-    		// content: undefined
-    		// content: <Edit {...props} />
-    		// content: linkedContent
-    		dynamicContent: linkedContent
-    	}
-    	// delete newAttrs.content;
-    		let newProps;
-    	newProps = {
-    		...props,
-    		attributes: newAttrs
-    	}
-    console.log(newProps, 'newProps');
-    */
-    console.log(props, 'props');
-
-    /* 
-    if (-1 === props.attributes.content.indexOf('a href')) {
-    	props.setAttributes( {
-    		content: '<a href="#">' + props.attributes.content + '</a>',
-    	} );	
-    }
-     */
-
-    // console.log(props, 'setAttributes --> props');
-
-    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(BlockEdit, {
-      ...props
-    }));
   };
-}));
+  // console.log(newSettings);
+  return newSettings;
+}
 })();
 
 /******/ })()
