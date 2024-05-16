@@ -84,7 +84,7 @@ function get_editor_assets(): array {
 function register_assets(): void {
 
 	\register_post_meta(
-		'gp_venue',
+		'gatherpress_venue',
 		'venue_information__website',
 		array(
 			'auth_callback'     => function () {
