@@ -44,8 +44,7 @@ function bootstrap(): void {
 			if ( 'venue_information__website' !== $meta_key ) {
 				return $metadata;
 			}
-			$venue_information = (array) json_decode( get_post_meta( $object_id, 'venue_information', true ) );
-			// die(\var_dump($venue_information, $object_id));
+			$venue_information = (array) json_decode( get_post_meta( $object_id, 'gatherpress_venue_information', true ) );
 			return [
 				( isset( $venue_information['website'] ) ) ? $venue_information['website'] : '',
 			];
