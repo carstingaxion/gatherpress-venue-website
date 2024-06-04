@@ -242,13 +242,14 @@ function render_venue_website_block( $block_content, $block, $instance ) {
 			$title,
 			url_shorten( $meta )
 		);
+		$block_content  = \str_replace(
+			'>' . $meta . '</',
+			'>' . $linked_content . '</',
+			$block_content
+		);
 	}
 
-	return \str_replace(
-		'>' . $meta . '</',
-		'>' . $linked_content . '</',
-		$block_content
-	);
+	return $block_content;
 }
 
 
