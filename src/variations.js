@@ -169,11 +169,11 @@ registerBlockVariation( 'core/button', {
 
 addFilter(
     'blocks.registerBlockType',
-    'gatherpress/extend-query-block',
-    extendQueryBlock
+    'gatherpress/extend-paragraph-block',
+    extendParagraphBlock
 );
 
-function extendQueryBlock(settings, name) {
+function extendParagraphBlock(settings, name) {
     if (name !== 'core/paragraph') {
         return settings;
     }
