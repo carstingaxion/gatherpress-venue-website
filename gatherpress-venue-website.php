@@ -44,6 +44,8 @@ function bootstrap(): void {
 			if ( 'venue_information__website' !== $meta_key ) {
 				return $metadata;
 			}
+
+			// die(\var_export([$object_id,get_post_meta( $object_id, 'gatherpress_venue_information', true )],true));
 			$venue_information = (array) json_decode( get_post_meta( $object_id, 'gatherpress_venue_information', true ) );
 			return [
 				( isset( $venue_information['website'] ) ) ? $venue_information['website'] : '',
@@ -199,9 +201,21 @@ function render_venue_website_block( $block_content, $block, $instance ) {
 	if ( ! isset( $block['attrs']['className'] ) || false === \strpos( $block['attrs']['className'], 'gp-venue-website' ) ) {
 		return $block_content;
 	}
-	// wp_die('<pre>'.\var_export($block,true).'</pre>');
-	// wp_die('<pre>'.\var_export($instance,true).'</pre>');
-	// wp_die('<pre>'.\var_export($instance->context,true).'</pre>');
+
+	// $block_content = '<pre>' . \var_export(
+	// 	[
+	// 		$block['attrs'],
+	// 		$instance->context,
+	// 		// get_post( $instance->context['postId'] ),
+	// 		\get_post_meta( 
+	// 			$instance->context['postId'],
+	// 			'venue_information__website',
+	// 			true
+	// 		),
+	// 		// $venue_post,
+	// 	],
+	// 	true 
+	// ) . '</pre>' . $block_content;
 
 	// Mostly copied from
 	// /gutenberg/packages/block-library/src/post-title/index.php#L38
@@ -242,8 +256,8 @@ function hook_block_into_pattern( $hooked_block_types, $relative_position, $anch
 	if (
 		// Conditionally hook the block into the "gatherpress/venue-details" pattern.
 		is_array( $context ) &&
-		isset( $context[ 'name' ] ) &&
-		'gatherpress/venue-details' === $context[ 'name' ]
+		isset( $context['name'] ) &&
+		'gatherpress/venue-details' === $context['name']
 	) {
 
 		// Conditionally hook the block after "the" paragraph block,
@@ -256,7 +270,7 @@ function hook_block_into_pattern( $hooked_block_types, $relative_position, $anch
 }
 
 
-function modify_hooked_block_in_pattern( $parsed_hooked_block, $hooked_block_type, $relative_position, $parsed_anchor_block, $context  ) {
+function modify_hooked_block_in_pattern( $parsed_hooked_block, $hooked_block_type, $relative_position, $parsed_anchor_block, $context ) {
 
 	// Has the hooked block been suppressed by a previous filter?
 	if ( is_null( $parsed_hooked_block ) ) {
@@ -266,25 +280,24 @@ function modify_hooked_block_in_pattern( $parsed_hooked_block, $hooked_block_typ
 	// Conditionally hook the block into the "gatherpress/venue-details" pattern.
 	if (
 		! is_array( $context ) ||
-		! isset( $context[ 'name' ] ) ||
-		'gatherpress/venue-details' !== $context[ 'name' ]
+		! isset( $context['name'] ) ||
+		'gatherpress/venue-details' !== $context['name']
 	) {
 		return $parsed_hooked_block;
 	}
 
 	// Only apply the updated attributes if the block is hooked after a Site Title block.
-	if ( 
-		'core/paragraph' === $parsed_anchor_block['blockName'] &&
+	if ( 'core/paragraph' === $parsed_anchor_block['blockName'] &&
 		'after' === $relative_position
 	) {
-		$parsed_hooked_block['innerContent']                                            = [ '<p class="gp-venue-website"></p>' ]; // important to get a paragraph injected at all.
-		$parsed_hooked_block['attrs']['className']                                      = 'gp-venue-website';
-		$parsed_hooked_block['attrs']['placeholder']                                    = __( 'No website added, yet.', 'gatherpress' ); // className is not supported for paragraphs, and so we can't set it.
-		$parsed_hooked_block['attrs']['metadata']                                       = [];
-		$parsed_hooked_block['attrs']['metadata']['bindings']                           = [];
-		$parsed_hooked_block['attrs']['metadata']['bindings']['content']                = [];
-		$parsed_hooked_block['attrs']['metadata']['bindings']['content']['source']      = 'core/post-meta';
-		$parsed_hooked_block['attrs']['metadata']['bindings']['content']['args']        = [];
+		$parsed_hooked_block['innerContent']                                       = [ '<p class="gp-venue-website"></p>' ]; // important to get a paragraph injected at all.
+		$parsed_hooked_block['attrs']['className']                                 = 'gp-venue-website';
+		$parsed_hooked_block['attrs']['placeholder']                               = __( 'No website added, yet.', 'gatherpress' ); // className is not supported for paragraphs, and so we can't set it.
+		$parsed_hooked_block['attrs']['metadata']                                  = [];
+		$parsed_hooked_block['attrs']['metadata']['bindings']                      = [];
+		$parsed_hooked_block['attrs']['metadata']['bindings']['content']           = [];
+		$parsed_hooked_block['attrs']['metadata']['bindings']['content']['source'] = 'core/post-meta';
+		$parsed_hooked_block['attrs']['metadata']['bindings']['content']['args']   = [];
 		$parsed_hooked_block['attrs']['metadata']['bindings']['content']['args']['key'] = [ 'venue_information__website' ];
 		// wp_die($parsed_hooked_block);
 	}
