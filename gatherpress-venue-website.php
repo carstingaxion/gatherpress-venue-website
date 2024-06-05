@@ -57,9 +57,9 @@ function bootstrap(): void {
 	// https://developer.wordpress.org/reference/hooks/render_block_this-name/
 	add_filter( 'render_block_core/paragraph', __NAMESPACE__ . '\\render_venue_website_block', 10, 3 );
 
-	// add_filter( 'hooked_block_types', __NAMESPACE__ . '\\hook_block_into_pattern', 10, 4 );
+	add_filter( 'hooked_block_types', __NAMESPACE__ . '\\hook_block_into_pattern', 10, 4 );
 
-	// add_filter( 'hooked_block_core/paragraph', __NAMESPACE__ . '\\modify_hooked_block_in_pattern', 10, 5 );
+	add_filter( 'hooked_block_core/paragraph', __NAMESPACE__ . '\\modify_hooked_block_in_pattern', 10, 5 );
 }
 bootstrap();
 
@@ -261,7 +261,7 @@ function hook_block_into_pattern( $hooked_block_types, $relative_position, $anch
 
 		// Conditionally hook the block after "the" paragraph block,
 		// this <p> is the important one, like described in gatherpress/includes/core/classes/class-block.php
-		if ( 'after' === $relative_position && 'core/paragraph' === $anchor_block_type ) {
+		if ( 'after' === $relative_position && 'core/post-title' === $anchor_block_type ) {
 			$hooked_block_types[] = 'core/paragraph';
 		}
 	}
@@ -286,7 +286,7 @@ function modify_hooked_block_in_pattern( $parsed_hooked_block, $hooked_block_typ
 	}
 
 	// Only apply the updated attributes if the block is hooked after a Site Title block.
-	if ( 'core/paragraph' === $parsed_anchor_block['blockName'] &&
+	if ( 'core/post-title' === $parsed_anchor_block['blockName'] &&
 		'after' === $relative_position
 	) {
 		$parsed_hooked_block['innerContent']                                       = [ '<p class="gp-venue-website"></p>' ]; // important to get a paragraph injected at all.
