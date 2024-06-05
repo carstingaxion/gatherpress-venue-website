@@ -3,8 +3,8 @@
  * Plugin Name:       Gatherpress venue-website block
  * Description:       An experiment to replace the "website" part of the `gatherpress/venue` block with a block-variation of the `core/paragraph` block.
  * Version:           0.1.0-alpha
- * Requires at least: 6.5-RC2
- * Requires PHP:      7.0
+ * Requires at least: 6.5.3
+ * Requires PHP:      8.1
  * Author:            The WordPress Contributors
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -28,7 +28,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\\register_assets', 1 );
-
 	add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\enqueue_assets' );
 
 	/**
@@ -41,7 +40,7 @@ function bootstrap(): void {
 	\add_filter(
 		'get_post_metadata',
 		function ( $metadata, $object_id, $meta_key ): mixed {
-			if ( 'venue_information__website' !== $meta_key ) {
+			if ( 'venue_information_website' !== $meta_key ) {
 				return $metadata;
 			}
 
@@ -58,9 +57,9 @@ function bootstrap(): void {
 	// https://developer.wordpress.org/reference/hooks/render_block_this-name/
 	add_filter( 'render_block_core/paragraph', __NAMESPACE__ . '\\render_venue_website_block', 10, 3 );
 
-	add_filter( 'hooked_block_types', __NAMESPACE__ . '\\hook_block_into_pattern', 10, 4 );
+	// add_filter( 'hooked_block_types', __NAMESPACE__ . '\\hook_block_into_pattern', 10, 4 );
 
-	add_filter( 'hooked_block_core/paragraph', __NAMESPACE__ . '\\modify_hooked_block_in_pattern', 10, 5 );
+	// add_filter( 'hooked_block_core/paragraph', __NAMESPACE__ . '\\modify_hooked_block_in_pattern', 10, 5 );
 }
 bootstrap();
 
@@ -86,7 +85,7 @@ function register_assets(): void {
 
 	\register_post_meta(
 		'gatherpress_venue',
-		'venue_information__website',
+		'venue_information_website',
 		array(
 			'auth_callback'     => function () {
 				return current_user_can( 'edit_posts' );
@@ -206,13 +205,12 @@ function render_venue_website_block( $block_content, $block, $instance ) {
 	// 	[
 	// 		$block['attrs'],
 	// 		$instance->context,
-	// 		// get_post( $instance->context['postId'] ),
+	// 		get_post( $instance->context['postId'] ),
 	// 		\get_post_meta( 
 	// 			$instance->context['postId'],
-	// 			'venue_information__website',
+	// 			'venue_information_website',
 	// 			true
 	// 		),
-	// 		// $venue_post,
 	// 	],
 	// 	true 
 	// ) . '</pre>' . $block_content;
@@ -229,7 +227,7 @@ function render_venue_website_block( $block_content, $block, $instance ) {
 		);
 		$meta           = \get_post_meta( 
 			$instance->context['postId'],
-			'venue_information__website',
+			'venue_information_website',
 			true
 		);
 		$target         = ! empty( $block['attrs']['linkTarget'] ) ? 'target="' . esc_attr( $block['attrs']['linkTarget'] ) . '"' : '';
@@ -299,7 +297,8 @@ function modify_hooked_block_in_pattern( $parsed_hooked_block, $hooked_block_typ
 		$parsed_hooked_block['attrs']['metadata']['bindings']['content']           = [];
 		$parsed_hooked_block['attrs']['metadata']['bindings']['content']['source'] = 'core/post-meta';
 		$parsed_hooked_block['attrs']['metadata']['bindings']['content']['args']   = [];
-		$parsed_hooked_block['attrs']['metadata']['bindings']['content']['args']['key'] = [ 'venue_information__website' ];
+		// $parsed_hooked_block['attrs']['metadata']['bindings']['content']['args']['key'] = [ 'venue_information_website' ];
+		$parsed_hooked_block['attrs']['metadata']['bindings']['content']['args']['key'] = 'venue_information_website';
 		// wp_die($parsed_hooked_block);
 	}
 
