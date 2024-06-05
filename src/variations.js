@@ -40,7 +40,7 @@ registerBlockVariation( 'core/paragraph', {
 				content: {
 					source: "core/post-meta",
 					args: {
-						key: "venue_information__website"
+						key: "venue_information_website"
 					}
 				}
 			}
