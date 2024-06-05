@@ -181,7 +181,7 @@ function extendParagraphBlock(settings, name) {
 	// console.info(settings);
 	
 	settings.usesContext.indexOf('postId') === -1 && settings.usesContext.push('postId');
-	// settings.usesContext.indexOf('postType') === -1 && settings.usesContext.push('postType');
+	settings.usesContext.indexOf('postType') === -1 && settings.usesContext.push('postType');
 	
 	const newSettings = {
         ...settings,
