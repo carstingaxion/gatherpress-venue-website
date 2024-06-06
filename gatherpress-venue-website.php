@@ -253,6 +253,21 @@ function render_venue_website_block( $block_content, $block, $instance ) {
 
 
 function hook_block_into_pattern( $hooked_block_types, $relative_position, $anchor_block_type, $context ) {
+
+	if (
+		// Conditionally hook the block into the "gatherpress/venue-details" pattern.
+		is_array( $context ) &&
+		isset( $context['name'] ) &&
+		'gatherpress/venue-details' === $context['name']
+	) {
+
+		// Conditionally hook the block after "the" paragraph block,
+		// this <p> is the important one, like described in gatherpress/includes/core/classes/class-block.php.
+		if ( 'after' === $relative_position && 'core/paragraph' === $anchor_block_type ) {
+			$hooked_block_types[] = 'core/paragraph';
+		}
+	}
+
 	if (
 		// Conditionally hook the block into the "gatherpress/venue-facts" pattern.
 		is_array( $context ) &&
@@ -260,8 +275,7 @@ function hook_block_into_pattern( $hooked_block_types, $relative_position, $anch
 		'gatherpress/venue-facts' === $context['name']
 	) {
 
-		// Conditionally hook the block after "the" paragraph block,
-		// this <p> is the important one, like described in gatherpress/includes/core/classes/class-block.php
+		// Conditionally hook the block after "the" post-title block.
 		if ( 'after' === $relative_position && 'core/post-title' === $anchor_block_type ) {
 			$hooked_block_types[] = 'core/paragraph';
 		}
@@ -281,13 +295,13 @@ function modify_hooked_block_in_pattern( $parsed_hooked_block, $hooked_block_typ
 	if (
 		! is_array( $context ) ||
 		! isset( $context['name'] ) ||
-		'gatherpress/venue-facts' !== $context['name']
+		( 'gatherpress/venue-details' !== $context['name'] && 'gatherpress/venue-facts' !== $context['name'] )
 	) {
 		return $parsed_hooked_block;
 	}
 
 	// Only apply the updated attributes if the block is hooked after a Site Title block.
-	if ( 'core/post-title' === $parsed_anchor_block['blockName'] &&
+	if ( ( 'core/post-title' === $parsed_anchor_block['blockName'] || 'core/paragraph' === $parsed_anchor_block['blockName'] ) &&
 		'after' === $relative_position
 	) {
 		$parsed_hooked_block['innerContent']                                       = [ '<p class="gp-venue-website"></p>' ]; // important to get a paragraph injected at all.
