@@ -255,10 +255,10 @@ function render_venue_website_block( $block_content, $block, $instance ) {
 function hook_block_into_pattern( $hooked_block_types, $relative_position, $anchor_block_type, $context ) {
 
 	if (
-		// Conditionally hook the block into the "gatherpress/venue-details" pattern.
+		// Conditionally hook the block into the "gatherpress/venue-template" pattern.
 		is_array( $context ) &&
 		isset( $context['name'] ) &&
-		'gatherpress/venue-details' === $context['name']
+		'gatherpress/venue-template' === $context['name']
 	) {
 
 		// Conditionally hook the block after "the" paragraph block,
@@ -269,10 +269,10 @@ function hook_block_into_pattern( $hooked_block_types, $relative_position, $anch
 	}
 
 	if (
-		// Conditionally hook the block into the "gatherpress/venue-facts" pattern.
+		// Conditionally hook the block into the "gatherpress/venue-details" pattern.
 		is_array( $context ) &&
 		isset( $context['name'] ) &&
-		'gatherpress/venue-facts' === $context['name']
+		'gatherpress/venue-details' === $context['name']
 	) {
 
 		// Conditionally hook the block after "the" post-title block.
@@ -295,7 +295,7 @@ function modify_hooked_block_in_pattern( $parsed_hooked_block, $hooked_block_typ
 	if (
 		! is_array( $context ) ||
 		! isset( $context['name'] ) ||
-		( 'gatherpress/venue-details' !== $context['name'] && 'gatherpress/venue-facts' !== $context['name'] )
+		( 'gatherpress/venue-details' !== $context['name'] && 'gatherpress/venue-template' !== $context['name'] )
 	) {
 		return $parsed_hooked_block;
 	}
