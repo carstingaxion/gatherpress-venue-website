@@ -5,7 +5,7 @@
  * Version:           0.1.0-alpha
  * Requires at least: 6.5.3
  * Requires PHP:      8.1
- * Requires Plugins:  gutenberg, gatherpress-venue, gatherpress
+ * Requires Plugins:  gutenberg
  * Author:            The WordPress Contributors
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -254,10 +254,10 @@ function render_venue_website_block( $block_content, $block, $instance ) {
 
 function hook_block_into_pattern( $hooked_block_types, $relative_position, $anchor_block_type, $context ) {
 	if (
-		// Conditionally hook the block into the "gatherpress/venue-details" pattern.
+		// Conditionally hook the block into the "gatherpress/venue-facts" pattern.
 		is_array( $context ) &&
 		isset( $context['name'] ) &&
-		'gatherpress/venue-details' === $context['name']
+		'gatherpress/venue-facts' === $context['name']
 	) {
 
 		// Conditionally hook the block after "the" paragraph block,
@@ -277,11 +277,11 @@ function modify_hooked_block_in_pattern( $parsed_hooked_block, $hooked_block_typ
 		return $parsed_hooked_block;
 	}
 
-	// Conditionally hook the block into the "gatherpress/venue-details" pattern.
+	// Conditionally hook the block into the "gatherpress/venue-facts" pattern.
 	if (
 		! is_array( $context ) ||
 		! isset( $context['name'] ) ||
-		'gatherpress/venue-details' !== $context['name']
+		'gatherpress/venue-facts' !== $context['name']
 	) {
 		return $parsed_hooked_block;
 	}
